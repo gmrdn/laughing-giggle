@@ -10,13 +10,14 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name:  "boom",
-		Usage: "make an explosive entrance",
+		Name: "greet",
+		Usage: "fight the loneliness!",
 		Action: func(c *cli.Context) error {
-			fmt.Println("boom! I say!")
+			fmt.Println("Hello friend!")
 			return nil
 		},
 	}
+
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
