@@ -8,18 +8,26 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func main() {
+
+func printHello(c *cli.Context) error {
+	fmt.Println("Hello friend!")
+	return nil
+}
+
+func run(args []string)  {
+	
 	app := &cli.App{
 		Name: "greet",
 		Usage: "fight the loneliness!",
-		Action: func(c *cli.Context) error {
-			fmt.Println("Hello friend!")
-			return nil
-		},
+		Action: printHello,
 	}
-
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+
+func main() {
+	run(os.Args)
 }
