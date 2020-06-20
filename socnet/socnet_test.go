@@ -44,29 +44,53 @@ func TestPostedDurationAgo(t *testing.T) {
 			t.Errorf("got %q want %q", got, expected)
 		}
 	}
+
+	postedText := "I love the weather today"
 	
-	t.Run("should return just now when posted since less than 1 second", func(t *testing.T) {
-		messages := []Message{{Text: "I love the weather today", Date: time.Now()}}
+	createPostAtTime := func(time time.Time) SocialNetwork {
+		messages := []Message{{Text: postedText, Date: time}}
 		timeline := Timeline{"Alice", messages}
 		socnet := SocialNetwork{[]Timeline{timeline}}
+		return socnet
+	}
 
-		expected := []string{"I love the weather today (just now)"}
+	t.Run("should return just now when posted since less than 1 second", func(t *testing.T) {
+		socnet := createPostAtTime(time.Now())
+		expected := []string{postedText + " (just now)"}
 		got := socnet.ReadTimeline("Alice")
-
 		assertCorrectMessage(t, got[0], expected[0])
 
 	})
 
 	t.Run("should return X seconds ago when posted since less than 1 minute", func(t *testing.T) {
-		messages := []Message{{Text: "I love the weather today", Date: time.Now().Add(- time.Second * 42)}}
-		timeline := Timeline{"Alice", messages}
-		socnet := SocialNetwork{[]Timeline{timeline}}
-
-		expected := []string{"I love the weather today (42 seconds ago)"}
+		socnet := createPostAtTime(time.Now().Add(- time.Second * 42))
+		expected := []string{postedText + " (42 seconds ago)"}
 		got := socnet.ReadTimeline("Alice")
-
 		assertCorrectMessage(t, got[0], expected[0])
-
 	})
+
+
+	t.Run("should return X minutes ago when posted since less than 1 hour", func(t *testing.T) {
+		socnet := createPostAtTime(time.Now().Add(- time.Minute * 42))
+		expected := []string{postedText + " (42 minutes ago)"}
+		got := socnet.ReadTimeline("Alice")
+		assertCorrectMessage(t, got[0], expected[0])
+	})
+
+	t.Run("should return X hours ago when posted since less than 1 day", func(t *testing.T) {
+		socnet := createPostAtTime(time.Now().Add(- time.Hour * 2))
+		expected := []string{postedText + " (2 hours ago)"}
+		got := socnet.ReadTimeline("Alice")
+		assertCorrectMessage(t, got[0], expected[0])
+	})
+
+	t.Run("should return X days ago when posted since more than 48 hours", func(t *testing.T) {
+		socnet := createPostAtTime(time.Now().Add(- time.Hour * 50))
+		expected := []string{postedText + " (2 days ago)"}
+		got := socnet.ReadTimeline("Alice")
+		assertCorrectMessage(t, got[0], expected[0])
+	})
+
+	
 }
 

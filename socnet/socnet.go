@@ -54,5 +54,15 @@ func formatDurationWithUnit(duration time.Duration) string {
 	if time.Duration.Seconds(duration) <= 59 {
 		return fmt.Sprintf("%d seconds ago", int64(duration.Seconds())) 
 	}
-	return fmt.Sprintf("%d minutes ago", int64(duration.Minutes())) 
+	if time.Duration.Minutes(duration) <= 59 {
+		return fmt.Sprintf("%d minutes ago", int64(duration.Minutes())) 
+	}
+	if time.Duration.Hours(duration) <= 24 {
+		return fmt.Sprintf("%d hours ago", int64(duration.Hours())) 
+	}
+	if time.Duration.Hours(duration) >= 48 {
+		return fmt.Sprintf("%d days ago", int64(duration.Hours() / 24)) 
+	}
+	return ""
+
 }
