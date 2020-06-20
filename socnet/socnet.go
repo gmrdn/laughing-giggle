@@ -22,7 +22,7 @@ type Message struct {
 	Date time.Time
 }
 
-// ReadTimeline returns the list of messages for a given user name
+// ReadTimeline returns a formatted list of messages for a given user name
 func (socnet SocialNetwork) ReadTimeline(name string) []string {
 	for i := 0; i < len(socnet.Timelines); i++ {
 		if socnet.Timelines[i].Name == name {
@@ -48,17 +48,29 @@ func getTimeSinceMessage(message Message) string {
 }
 
 func formatDurationWithUnit(duration time.Duration) string {
-	if time.Duration.Seconds(duration) < 1.0 {
+	if time.Duration.Seconds(duration) < 1 {
 		return "just now"
+	}
+	if time.Duration.Seconds(duration) < 2 {
+		return fmt.Sprintf("%d second ago", int64(duration.Seconds())) 
 	}
 	if time.Duration.Seconds(duration) <= 59 {
 		return fmt.Sprintf("%d seconds ago", int64(duration.Seconds())) 
 	}
+	if time.Duration.Minutes(duration) < 2 {
+		return fmt.Sprintf("%d minute ago", int64(duration.Minutes())) 
+	}
 	if time.Duration.Minutes(duration) <= 59 {
 		return fmt.Sprintf("%d minutes ago", int64(duration.Minutes())) 
 	}
+	if time.Duration.Hours(duration) < 2 {
+		return fmt.Sprintf("%d hour ago", int64(duration.Hours())) 
+	}
 	if time.Duration.Hours(duration) <= 24 {
 		return fmt.Sprintf("%d hours ago", int64(duration.Hours())) 
+	}
+	if time.Duration.Hours(duration) < 48 {
+		return fmt.Sprintf("%d day ago", int64(duration.Hours() / 24)) 
 	}
 	if time.Duration.Hours(duration) >= 48 {
 		return fmt.Sprintf("%d days ago", int64(duration.Hours() / 24)) 
