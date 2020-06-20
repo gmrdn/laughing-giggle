@@ -35,13 +35,24 @@ func (socnet SocialNetwork) ReadTimeline(name string) []string {
 func reverseMessageLog(messages []Message) []string {
 	var reversedList []string
 	for i := len(messages); i > 0; i-- {
-		reversedList = append(reversedList, messages[i - 1].Text + " (" + getTimeSinceMessage(messages[i - 1]) + " ago)")
+		reversedList = append(reversedList, messages[i - 1].Text + " (" + getTimeSinceMessage(messages[i - 1]) + ")")
 	}
 	return reversedList
 }
 
 func getTimeSinceMessage(message Message) string {
-	duration := time.Now().Sub(message.Date).Round(time.Minute)
+	duration := time.Now().Sub(message.Date)
+	
+	formatted := formatDurationWithUnit(duration)
+	return formatted
+}
 
-	return fmt.Sprintf("%d minutes", int64(duration.Minutes())) 
-} 
+func formatDurationWithUnit(duration time.Duration) string {
+	if time.Duration.Seconds(duration) < 1.0 {
+		return "just now"
+	}
+	if time.Duration.Seconds(duration) <= 59 {
+		return fmt.Sprintf("%d seconds ago", int64(duration.Seconds())) 
+	}
+	return fmt.Sprintf("%d minutes ago", int64(duration.Minutes())) 
+}
